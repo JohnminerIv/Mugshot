@@ -14,6 +14,7 @@ app = Flask(__name__)
 def index():
     tb._SYMBOLIC_SCOPE.value = True
     info = check_image()
+    print()
     return render_template("index.html", info=info)
 
 
