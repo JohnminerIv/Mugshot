@@ -18,7 +18,7 @@ image = cv2.imread(args["image"])
 orig = image.copy()
 
 # pre-process the image for classification
-image = cv2.resize(image, (28, 28))
+image = cv2.resize(image, (56, 56))
 image = image.astype("float") / 255.0
 image = img_to_array(image)
 image = np.expand_dims(image, axis=0)
