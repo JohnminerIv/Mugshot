@@ -35,7 +35,8 @@ def check():
     # info = check_image(image)
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        MYDIR = os.path.dirname(__file__)
+        file.save(os.path.join(MYDIR + "/" + app.config['UPLOAD_FOLDER'], filename))
         info = check_image(f'uploads/{filename}')
         return render_template("index.html", info=info)
 
