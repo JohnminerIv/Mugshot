@@ -6,9 +6,13 @@ import imutils
 import cv2
 
 
-def check_image():
+def check_image(image=None):
     # load the image
-    image = cv2.imread('examples/Bowl.jpg')
+    if image is None:
+        image = cv2.imread('examples/Bowl.jpg')
+
+    else:
+        image = cv2.imread(image)
 
     # pre-process the image for classification
     image = cv2.resize(image, (56, 56))
