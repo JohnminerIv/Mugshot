@@ -4,8 +4,8 @@ from check_image import check_image
 from werkzeug.utils import secure_filename
 import os
 
-UPLOAD_FOLDER = 'pictures'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+UPLOAD_FOLDER = 'static'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -20,22 +20,23 @@ def index():
     tb._SYMBOLIC_SCOPE.value = True
     info = check_image()
     print()
-    return render_template("index.html", info=info, image='')
+    return render_template("home.html", info=info, image='')
 
 
-@app.route('/check', methods=['POST'])
+@app.route('/check', methods=['GET', 'POST'])
 def check():
     tb._SYMBOLIC_SCOPE.value = True
-    file = request.files['fileToUpload']
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        MYDIR = os.path.dirname(__file__)
-        file.save(os.path.join(MYDIR + "/" + app.config['UPLOAD_FOLDER'], filename))
-        #  file.save(os.path.join(MYDIR + "/static/images", filename))
-        info = check_image(f'pictures/{filename}')
-        return render_template("index.html", info=info, image=filename)
-
-    return render_template("index.html", info="Error while processing file.")
+    if request.method == 'POST':
+        file = request.files['fileToUpload']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            MYDIR = os.path.dirname(__file__)
+            file.save(os.path.join(MYDIR + "/" + app.config['UPLOAD_FOLDER'], filename))
+            # file.save(os.path.join(MYDIR + "/static", filename))
+            info = check_image(f'static/{filename}')
+            return render_template("index.html", info=info, image=filename)
+    else:
+        return render_template("index.html", info="No file uploaded", image='')
 
 
 if __name__ == '__main__':
