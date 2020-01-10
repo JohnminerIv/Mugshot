@@ -9,7 +9,7 @@ import argparse
 import imutils
 import cv2
 import os
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'pictures'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
