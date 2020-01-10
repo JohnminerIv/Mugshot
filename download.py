@@ -5,58 +5,43 @@ import cv2
 import os
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-u", "--urls", required=True, help="path to file containing image URLs")
-    ap.add_argument("-o", "--output", required=True, help="path to output directory of images")
-    args = vars(ap.parse_args())
-    rows = open(args["urls"]).read().strip().split("\n")
+def main(urls, outputs):
+    rows = open(urls).read().strip().split("\n")
     total = 0
-
     # loop the URLs
     for url in rows:
         try:
             # try to download the image
             r = requests.get(url, timeout=60)
-
             # save the image to disk
-            p = os.path.sep.join([args["output"], "{}.jpg".format(str(total).zfill(8))])
-            f = open(p, "wb")
+            img_num = os.path.sep.join([outputs, "{}.jpg".format(str(total).zfill(8))])
+            f = open(img_num, "wb")
             f.write(r.content)
             f.close()
-
-            # update the counter
-            print("[INFO] downloaded: {}".format(p))
+            print(f"Downloaded: {img_num}")
             total += 1
-
-            # handle if any exceptions are thrown during the download process
+            # handle if any exceptions are thrown during the download process so it doesn't die
         except:
-            print("[INFO] error downloading {}...skipping".format(p))
+            print(f"Skipping: {img_num}")
 
-    for imagePath in paths.list_images(args["output"]):
-        # initialize if the image should be deleted or not
+    for image_path in paths.list_images(outputs):
         delete = False
-
-        # try to load the image
         try:
-            image = cv2.imread(imagePath)
-
-            # if the image is `None` then we could not properly load it
-            # from disk, so delete it
+            image = cv2.imread(image_path)
             if image is None:
                 delete = True
-
-        # if OpenCV cannot load the image then the image is likely
-        # corrupt so we should delete it
         except:
             print("Except")
             delete = True
-
         # check to see if the image should be deleted
         if delete:
-            print("[INFO] deleting {}".format(imagePath))
-            os.remove(imagePath)
+            print(f"Deleting {image_path}")
+            os.remove(image_path)
 
 
-if __name__=="__main__":
-    main()
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-u", "--urls", required=True, help="path to file containing image URLs")
+    ap.add_argument("-o", "--output", required=True, help="path to output directory of images")
+    args = vars(ap.parse_args())
+    main(args["urls"], args["output"])
